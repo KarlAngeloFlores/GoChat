@@ -10,7 +10,7 @@
         android:id="@+id/btnVerifyButton"
         android:layout_width="276dp"
         android:layout_height="52dp"
-        android:text="Button"
+        android:text="Send Verification Code"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
