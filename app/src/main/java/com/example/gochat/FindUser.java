@@ -83,29 +83,42 @@ public class FindUser extends AppCompatActivity {
     //end bracket
 
     private void getUserDetails(UserObject mContact) {
-        userDatabase = FirebaseDatabase.getInstance().getReference("user");
-        Query query = userDatabase.orderByChild("phone").equalTo(mContact.getPhone());
+        DatabaseReference mUserDB = FirebaseDatabase.getInstance().getReference().child("user");
+        Query query = mUserDB.orderByChild("phone").equalTo(mContact.getPhone());
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()) {
-                    for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
-                        String name = childSnapshot.child("name").getValue(String.class);
-                        String phone = childSnapshot.child("phone").getValue(String.class);
+                if(dataSnapshot.exists()){
+                    String  phone = "",
+                            name = "";
+                    for(DataSnapshot childSnapshot : dataSnapshot.getChildren()){
+                        if(childSnapshot.child("phone").getValue()!=null)
+                            phone = childSnapshot.child("phone").getValue().toString();
+                        if(childSnapshot.child("name").getValue()!=null)
+                            name = childSnapshot.child("name").getValue().toString();
+
+
                         UserObject mUser = new UserObject(name, phone);
+                        if (name.equals(phone))
+                            for(UserObject mContactIterator : contactListArray){
+                                if(mContactIterator.getPhone().equals(mUser.getPhone())){
+                                    mUser.setName(mContactIterator.getName());
+                                }
+                            }
+
                         userListArray.add(mUser);
+                        userListAdapter.notifyDataSetChanged();
+                        return;
                     }
-                    //updates adapter
-                    userListAdapter.notifyDataSetChanged();
                 }
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                Log.e("FindUser", "Database Error: " + databaseError.getMessage());
+
             }
         });
     }
+
     private void initializeRecycleView() {
         userListRv = findViewById(R.id.rvUserList);
         userListRv.setNestedScrollingEnabled(false);
