@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.annotation.SuppressLint;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.provider.ContactsContract;
@@ -24,9 +25,11 @@ import java.util.ArrayList;
 
 public class FindUser extends AppCompatActivity {
 
-    private RecyclerView userList;
-    private RecyclerView.Adapter userListAdapter;
-    private RecyclerView.LayoutManager userListLayoutManager;
+    private RecyclerView userListRv; //my recycle view
+    private RecyclerView.Adapter userListAdapter; //adapter
+    DatabaseReference userDatabase; //my database reference
+
+    private RecyclerView.LayoutManager userListLayoutManager; //layout manager
 
     ArrayList<UserObject> userListArray, contactListArray;
 
@@ -35,11 +38,12 @@ public class FindUser extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_find_user);
 
-        contactListArray = new ArrayList<>();
-        userListArray = new ArrayList<>();
-        //calls
-        initializeRecycleView(); //called the function
-        getContactList(); //called the function contact list
+        contactListArray = new ArrayList<>(); //list contains all contacts
+        userListArray = new ArrayList<>(); //list contains all users on database
+
+        //function calls
+        initializeRecycleView(); //called function for recycler view
+        getContactList(); //called function contact list
 
     } //end bracket for main body
 
@@ -60,9 +64,8 @@ public class FindUser extends AppCompatActivity {
         if (phones != null) {
             try {
                 while (phones.moveToNext()) {
-                    String name = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
-                    String phone = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-
+                    @SuppressLint("Range") String name = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
+                    @SuppressLint("Range") String phone = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
                     phone = phone.replace(" ", "").replace("-", "").replace("(", "").replace(")", "");
 
                     if (!phone.startsWith("+"))
@@ -73,33 +76,27 @@ public class FindUser extends AppCompatActivity {
                     getUserDetails(mContact);
                 }
             } finally {
-                phones.close(); // Ensure the Cursor is closed
+                phones.close(); //Cursor Closed
             }
         }
     }
     //end bracket
 
     private void getUserDetails(UserObject mContact) {
-        DatabaseReference mUserDB = FirebaseDatabase.getInstance().getReference().child("user");
-        Query query = mUserDB.orderByChild("phone").equalTo(mContact.getPhone());
+        userDatabase = FirebaseDatabase.getInstance().getReference("user");
+        Query query = userDatabase.orderByChild("phone").equalTo(mContact.getPhone());
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if(dataSnapshot.exists()){
-                    String  phone = "",
-                            name = "";
-                    for(DataSnapshot childSnapshot : dataSnapshot.getChildren()){
-                        if(childSnapshot.child("phone").getValue()!=null)
-                            phone = childSnapshot.child("phone").getValue().toString();
-                        if(childSnapshot.child("name").getValue()!=null)
-                            name = childSnapshot.child("name").getValue().toString();
-
-
+                if (dataSnapshot.exists()) {
+                    for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
+                        String name = childSnapshot.child("name").getValue(String.class);
+                        String phone = childSnapshot.child("phone").getValue(String.class);
                         UserObject mUser = new UserObject(name, phone);
-                        contactListArray.add(mUser);
-                        userListAdapter.notifyDataSetChanged();
-
+                        userListArray.add(mUser);
                     }
+                    //updates adapter
+                    userListAdapter.notifyDataSetChanged();
                 }
             }
 
@@ -109,16 +106,15 @@ public class FindUser extends AppCompatActivity {
             }
         });
     }
-
     private void initializeRecycleView() {
-        userList = findViewById(R.id.rvUserList);
-        userList.setNestedScrollingEnabled(false);
-        userList.setHasFixedSize(true);
+        userListRv = findViewById(R.id.rvUserList);
+        userListRv.setNestedScrollingEnabled(false);
+        userListRv.setHasFixedSize(true);
 
         userListLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-        userList.setLayoutManager(userListLayoutManager);
+        userListRv.setLayoutManager(userListLayoutManager);
 
         userListAdapter = new UserListAdapter(userListArray);
-        userList.setAdapter(userListAdapter);
+        userListRv.setAdapter(userListAdapter);
     }
 } //end bracket
