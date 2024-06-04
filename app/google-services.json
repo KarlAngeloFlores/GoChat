@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "1056528176659",
-    "project_id": "gochat-d8198",
-    "storage_bucket": "gochat-d8198.appspot.com"
+    "project_number": "1064144233302",
+    "project_id": "gochat-40d45",
+    "storage_bucket": "gochat-40d45.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1056528176659:android:61c91e56a867500a8191e6",
+        "mobilesdk_app_id": "1:1064144233302:android:e23a5d63fb7a3f0532ecf7",
         "android_client_info": {
           "package_name": "com.example.gochat"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyBeVQSM1YZ-DFkrR17YmLvU8thkzQN5MNs"
+          "current_key": "AIzaSyDaoplJjXQihL7io6R-SMyNzc4kONWTLiQ"
         }
       ],
       "services": {

@@ -33,6 +33,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserLi
 
     @Override
     public void onBindViewHolder(@NonNull UserListViewHolder holder, int position) {
+
         holder.name.setText(userListArray.get(position).getName());
         holder.phone.setText(userListArray.get(position).getPhone());
 
