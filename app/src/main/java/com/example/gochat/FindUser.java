@@ -27,10 +27,7 @@ public class FindUser extends AppCompatActivity {
 
     private RecyclerView userListRv; //my recycle view
     private RecyclerView.Adapter userListAdapter; //adapter
-    DatabaseReference userDatabase; //my database reference
-
     private RecyclerView.LayoutManager userListLayoutManager; //layout manager
-
     ArrayList<UserObject> userListArray, contactListArray;
 
     @Override
@@ -71,7 +68,7 @@ public class FindUser extends AppCompatActivity {
                     if (!phone.startsWith("+"))
                         phone = ISOPrefix + phone;
 
-                    UserObject mContact = new UserObject(name, phone);
+                    UserObject mContact = new UserObject("",name, phone);
                     contactListArray.add(mContact);
                     getUserDetails(mContact);
                 }
@@ -98,7 +95,7 @@ public class FindUser extends AppCompatActivity {
                             name = childSnapshot.child("name").getValue().toString();
 
 
-                        UserObject mUser = new UserObject(name, phone);
+                        UserObject mUser = new UserObject(childSnapshot.getKey(),name, phone);
                         if (name.equals(phone))
                             for(UserObject mContactIterator : contactListArray){
                                 if(mContactIterator.getPhone().equals(mUser.getPhone())){

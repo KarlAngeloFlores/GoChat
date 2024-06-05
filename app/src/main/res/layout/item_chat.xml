@@ -7,17 +7,12 @@
     android:id="@+id/layout">
 
     <TextView
-        android:id="@+id/name"
-        android:layout_width="wrap_content"
+        android:id="@+id/title"
+        android:layout_width="212dp"
         android:layout_height="wrap_content"
-        android:text="User Name"
+        android:padding="20sp"
+        android:text="Title"
         android:textSize="18sp"
         android:textStyle="bold" />
 
-    <TextView
-        android:id="@+id/phone"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Phone Number"
-        android:textSize="16sp" />
 </LinearLayout>
