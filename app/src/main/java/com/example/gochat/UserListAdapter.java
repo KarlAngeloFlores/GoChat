@@ -3,10 +3,14 @@ package com.example.gochat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
@@ -32,10 +36,23 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserLi
     }
 
     @Override
-    public void onBindViewHolder(@NonNull UserListViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull UserListViewHolder holder, final int position) {
 
         holder.name.setText(userListArray.get(position).getName());
         holder.phone.setText(userListArray.get(position).getPhone());
+
+        holder.mLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String key = FirebaseDatabase.getInstance().getReference().child("chat").push().getKey();
+
+                FirebaseDatabase.getInstance().getReference().child("user").child(FirebaseAuth.getInstance().getUid()).child("chat").child(key).setValue(true);
+                FirebaseDatabase.getInstance().getReference().child("user").child(userListArray.get(position).getUid()).child("chat").child(key).setValue(true);
+
+
+
+            }
+        });
 
     }
 
@@ -46,11 +63,15 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserLi
 
     public class UserListViewHolder extends RecyclerView.ViewHolder {
         public TextView name, phone;
+        public LinearLayout mLayout;
     public UserListViewHolder(View view) {
         super(view); //comes first
 
         name = view.findViewById(R.id.name);
         phone = view.findViewById(R.id.phone);
+        mLayout = view.findViewById(R.id.layout);
+
+
 
         }
     }
