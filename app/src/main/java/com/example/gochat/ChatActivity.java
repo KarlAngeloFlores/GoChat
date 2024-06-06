@@ -1,5 +1,7 @@
 package com.example.gochat;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -13,6 +15,9 @@ import android.widget.EditText;
 import com.example.gochat.Chat.MessageAdapter;
 import com.example.gochat.Chat.MessageObject;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -32,6 +37,7 @@ public class ChatActivity extends AppCompatActivity {
 
     String chatId;
 
+    DatabaseReference mChatDb;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,9 +54,11 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
 
+        mChatDb = FirebaseDatabase.getInstance().getReference().child("chat").child(chatId);
+
         //function calls
+        getChatMessages();
         initializeRecyclerView();
-        
 
     }
 
@@ -66,6 +74,54 @@ public class ChatActivity extends AppCompatActivity {
         }
 
         mMessage.setText(null);
+
+
+    }
+
+    private void getChatMessages() {
+        mChatDb.addChildEventListener(new ChildEventListener() {
+
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                if(snapshot.exists()) {
+                    String text = "", creatorId = "";
+
+                    if(snapshot.child("text").getValue() != null) {
+                        text = snapshot.child("text").getValue().toString();
+                    }
+
+                    if(snapshot.child("creator").getValue() != null) {
+                        creatorId = snapshot.child("creator").getValue().toString();
+                    }
+
+                    MessageObject mMessage = new MessageObject(snapshot.getKey(), creatorId, text);
+
+                    messageListArray.add(mMessage);
+                    chatLayoutManager.scrollToPosition(messageListArray.size() - 1); //scroll to the last message
+                    chatAdapter.notifyDataSetChanged();
+                }
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
 
     }
 

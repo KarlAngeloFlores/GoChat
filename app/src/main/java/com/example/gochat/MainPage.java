@@ -11,10 +11,12 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.example.gochat.Chat.ChatListAdapter;
 import com.example.gochat.Chat.ChatObject;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -31,12 +33,27 @@ public class MainPage extends AppCompatActivity {
     private RecyclerView.LayoutManager chatListLayoutManager; //layout manager
     ArrayList<ChatObject> chatListArray = new ArrayList<>();
 
+    FirebaseUser currentUser;
+
+    Button showCurrent;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_page);
         logoutButton = findViewById(R.id.btnLogout);
         contactsButton = findViewById(R.id.btnFindUsers);
+
+        currentUser  = FirebaseAuth.getInstance().getCurrentUser();
+
+        showCurrent = findViewById(R.id.btnShowCurrent);
+
+        showCurrent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(MainPage.this, currentUser.getUid(), Toast.LENGTH_SHORT).show();
+            }
+        });
 
         logoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -59,7 +76,7 @@ public class MainPage extends AppCompatActivity {
 
         getPermissions(); //get permissions
         initializeRecycleView(); //initialize View
-        getUserChatList();
+        getUserChatList(); //getUser Chat List
     } //end of main body bracket
 
     private void getUserChatList() {

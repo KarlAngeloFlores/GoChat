@@ -53,7 +53,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
         public MessageViewHolder(View view){
             super(view);
 
-            mMessage = view.findViewById(R.id.messageEt);
+            mMessage = view.findViewById(R.id.messageTxt);
             mSender = view.findViewById(R.id.sender);
 
             mLayout = view.findViewById(R.id.layout);
