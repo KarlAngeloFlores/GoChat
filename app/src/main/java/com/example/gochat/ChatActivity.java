@@ -32,18 +32,25 @@ public class ChatActivity extends AppCompatActivity {
     private RecyclerView.LayoutManager chatLayoutManager; //layout manager
     ArrayList<MessageObject> messageListArray = new ArrayList<>();
 
+
+
     Button btnSend;
     EditText mMessage;
 
     String chatId;
 
     DatabaseReference mChatDb;
+
+    String currentUserId;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
 
         chatId = getIntent().getExtras().getString("chatID");
+
+        currentUserId = FirebaseAuth.getInstance().getUid();
 
         btnSend = findViewById(R.id.send);
         mMessage = findViewById(R.id.messageEt);
@@ -126,7 +133,6 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     private void initializeRecyclerView() {
-
         chatRv = findViewById(R.id.rvMessage);
         chatRv.setNestedScrollingEnabled(false);
         chatRv.setHasFixedSize(true);
@@ -134,9 +140,8 @@ public class ChatActivity extends AppCompatActivity {
         chatLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         chatRv.setLayoutManager(chatLayoutManager);
 
-        chatAdapter = new MessageAdapter(messageListArray);
+        chatAdapter = new MessageAdapter(messageListArray, currentUserId); // Pass current user ID
         chatRv.setAdapter(chatAdapter);
-
     }
 
 }
