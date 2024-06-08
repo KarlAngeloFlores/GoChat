@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+
+        <corners android:radius="24dp" android:bottomLeftRadius="0dp"/>
+        <!-- Use ARGB color code for solid color -->
+        <!-- 68 is the alpha value (in hex), 6D is the red value, 76 is the green value -->
+        <solid android:color="#30686D76"/>
+
+</shape>

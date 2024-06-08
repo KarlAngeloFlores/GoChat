@@ -46,14 +46,9 @@ public class MainPage extends AppCompatActivity {
 
         currentUser  = FirebaseAuth.getInstance().getCurrentUser();
 
-        showCurrent = findViewById(R.id.btnShowCurrent);
 
-        showCurrent.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(MainPage.this, currentUser.getUid(), Toast.LENGTH_SHORT).show();
-            }
-        });
+
+
 
         logoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
