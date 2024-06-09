@@ -140,7 +140,7 @@ public class ChatActivity extends AppCompatActivity {
                                 if (totalMediaUpload < mediaIdList.size()) {  // Check bounds
                                     newMessageMap.put("/media/" + mediaIdList.get(totalMediaUpload) + "/", uri.toString());
                                     totalMediaUpload++;
-                                    if(totalMediaUpload == mediaUriList.size())
+                                    if (totalMediaUpload == mediaUriList.size())
                                         updateDatabaseWithNewMessage(newMessageDb, newMessageMap);
                                 }
                             }
@@ -161,6 +161,7 @@ public class ChatActivity extends AppCompatActivity {
         mMessage.setText(null);
         mediaIdList.clear();
         mediaUriList.clear();
+        mediaRv.setVisibility(View.GONE);
         mediaAdapter.notifyDataSetChanged();
     }
 
@@ -187,9 +188,7 @@ public class ChatActivity extends AppCompatActivity {
                             mediaUrlList.add(mediaSnapshot.getValue().toString());
                     }
 
-
                     MessageObject mMessage = new MessageObject(snapshot.getKey(), creatorId, text, mediaUrlList);
-
 
                     messageListArray.add(mMessage);
                     chatLayoutManager.scrollToPosition(messageListArray.size() - 1); //scroll to the last message
@@ -242,6 +241,7 @@ public class ChatActivity extends AppCompatActivity {
 
         mediaAdapter = new MediaAdapter(getApplicationContext(), mediaUriList); // Pass current user ID
         mediaRv.setAdapter(mediaAdapter);
+        mediaRv.setVisibility(View.GONE);
     }
 
     private void openGallery() {
@@ -251,7 +251,6 @@ public class ChatActivity extends AppCompatActivity {
         intent.setAction(intent.ACTION_GET_CONTENT);
         startActivityForResult(Intent.createChooser(intent, "Select Picture(s)"), PICK_IMAGE_INTENT);
     }
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
