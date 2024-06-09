@@ -1,20 +1,18 @@
 package com.example.gochat;
 
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import android.content.Intent;
-import android.net.Uri;
-import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.TextView;
-
 
 import com.example.gochat.Chat.MediaAdapter;
 import com.example.gochat.Chat.MessageAdapter;
@@ -29,7 +27,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -175,16 +172,23 @@ public class ChatActivity extends AppCompatActivity {
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
                 if(snapshot.exists()) {
                     String text = "", creatorId = "";
+                    ArrayList<String> mediaUrlList = new ArrayList<>();
 
-                    if(snapshot.child("text").getValue() != null) {
+                    if(snapshot.child("text").getValue() != null) { //text
                         text = snapshot.child("text").getValue().toString();
                     }
 
-                    if(snapshot.child("creator").getValue() != null) {
+                    if(snapshot.child("creator").getValue() != null) { //creator
                         creatorId = snapshot.child("creator").getValue().toString();
                     }
 
-                    MessageObject mMessage = new MessageObject(snapshot.getKey(), creatorId, text);
+                    if(snapshot.child("media").getChildrenCount() > 0) { //image
+                        for(DataSnapshot mediaSnapshot : snapshot.child("media").getChildren())
+                            mediaUrlList.add(mediaSnapshot.getValue().toString());
+                    }
+
+
+                    MessageObject mMessage = new MessageObject(snapshot.getKey(), creatorId, text, mediaUrlList);
 
 
                     messageListArray.add(mMessage);
