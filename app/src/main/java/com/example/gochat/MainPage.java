@@ -26,6 +26,9 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 
 public class MainPage extends AppCompatActivity {
+
+
+
     Button logoutButton, contactsButton;
 
     private RecyclerView chatListRv; //my recycle view
