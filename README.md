@@ -5,3 +5,4 @@ Getting Contact List - Karl Angelo Flores
 Added Names on Contact List - Karl Angelo Flores
 Added chat functionalities - Karl Angelo Flores
 Added select image functionality - Christina Lim and Karl Angelo Flores
+Splash screen ongoing 
