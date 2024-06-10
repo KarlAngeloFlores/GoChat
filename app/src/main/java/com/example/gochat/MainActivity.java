@@ -54,12 +54,6 @@ public class MainActivity extends AppCompatActivity {
         FirebaseApp.initializeApp(this);
 
 
-
-
-
-
-
-
         mAuth = FirebaseAuth.getInstance();
 
         userIsLoggedIn();
@@ -80,7 +74,6 @@ public class MainActivity extends AppCompatActivity {
 
             }
         }); //end bracket for event listener
-
 
         buttonSendCode.setOnClickListener(new View.OnClickListener() {
             @Override
