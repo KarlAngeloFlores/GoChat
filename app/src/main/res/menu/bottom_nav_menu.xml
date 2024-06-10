@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:icon="@drawable/round_chat_24"
+        android:id="@+id/messagesId"
+        android:title="Messages" />
+    <item
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:icon="@drawable/round_people_24"
+        android:id="@+id/contactsId"
+        android:title="Contact"
+        />
+
+    <item
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:icon="@drawable/round_account_circle_24"
+        android:iconTint="@color/white"
+        android:id="@+id/profileId"
+        android:title="Profile"
+
+        />
+
+</menu>

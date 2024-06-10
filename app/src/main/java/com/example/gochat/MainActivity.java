@@ -5,12 +5,14 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.gochat.databinding.ActivityMainBinding;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.Firebase;
@@ -36,17 +38,27 @@ import java.util.concurrent.TimeUnit;
 public class MainActivity extends AppCompatActivity {
     EditText phoneNumber, verificationCode;
 
-    Button buttonVerification;
+    Button buttonVerification, buttonSendCode;
     Long timeOutSeconds = 120L;
     FirebaseAuth mAuth;
     String sentVerificationCode;
     PhoneAuthProvider.ForceResendingToken resendingToken;
+
+    ActivityMainBinding binding;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         FirebaseApp.initializeApp(this);
+
+
+
+
+
+
+
 
         mAuth = FirebaseAuth.getInstance();
 
@@ -55,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
         phoneNumber = findViewById(R.id.etPhoneNumber);
         verificationCode = findViewById(R.id.etVerificationCode);
         buttonVerification = findViewById(R.id.btnVerifyButton);
-
+        buttonSendCode = findViewById(R.id.btnSendCode);
         buttonVerification.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -63,11 +75,19 @@ public class MainActivity extends AppCompatActivity {
                 if(sentVerificationCode != null) {
                     verifyPhoneNumberWithCode();
                 } else {
-                    sendOtp(phoneNumber.getText().toString());
+                    buttonVerification.setText("Incorrect code");
                 }
 
             }
         }); //end bracket for event listener
+
+
+        buttonSendCode.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sendOtp(phoneNumber.getText().toString());
+            }
+        });
 
     } //main bracket for body
     private void sendOtp(String phoneNumber) {
