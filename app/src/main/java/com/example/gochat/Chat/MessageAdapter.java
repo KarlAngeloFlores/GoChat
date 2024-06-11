@@ -3,6 +3,7 @@ package com.example.gochat.Chat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -10,18 +11,15 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.gochat.R;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
-
 public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageViewHolder> {
 
     ArrayList<MessageObject> messageListArray;
     private String currentUserId;
 
     FirebaseUser currentUser;
-
 
     public MessageAdapter(ArrayList<MessageObject> messageArray, String currentUserId) {
         this.messageListArray = messageArray;
@@ -53,6 +51,19 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
             holder.leftChatTextViewMessage.setText(messageObject.getMessage());
             //holder.leftChatTextViewCreator.setText(messageObject.getSenderId());
         }
+/*
+        holder.mViewMedia.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new ImageViewer.Builder(v.getContext(), messageListArray.get(holder.getAdapterPosition()).getMediaUrlList())
+                        .setStartPosition(0)
+                        .show();
+            }
+        });
+
+ */
+
+
     }
 
     @Override
@@ -64,6 +75,8 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
         LinearLayout leftChatLayout, rightChatLayout;
         TextView leftChatTextViewMessage, leftChatTextViewCreator, rightChatTextViewMessage, rightChatTextViewCreator;
 
+        Button mViewMedia;
+
         public MessageViewHolder(View view) {
             super(view);
 
@@ -73,6 +86,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
             //leftChatTextViewCreator = view.findViewById(R.id.left_chat_textview_creator);
             rightChatTextViewMessage = view.findViewById(R.id.right_chat_textview_message);
             //rightChatTextViewCreator = view.findViewById(R.id.right_chat_textview_creator);
+            //mViewMedia = view.findViewById(R.id.viewMedia);
         }
     }
 }

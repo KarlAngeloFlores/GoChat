@@ -1,30 +1,32 @@
 package com.example.gochat;
 
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.Intent;
-import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.TextView;
-
-
 import com.example.gochat.Chat.MediaAdapter;
 import com.example.gochat.Chat.MessageAdapter;
 import com.example.gochat.Chat.MessageObject;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -40,7 +42,6 @@ public class ChatActivity extends AppCompatActivity {
 
     ImageView btnSend;
     ImageView btnAddMedia;
-
 
     EditText mMessage;
 
@@ -61,8 +62,14 @@ public class ChatActivity extends AppCompatActivity {
         displayName = findViewById(R.id.tvDisplayName);
         btnAddMedia = findViewById(R.id.mAddMedia);
         chatId = getIntent().getExtras().getString("chatID");
+        String nameDisplay = getIntent().getStringExtra("DISPLAYNAME");
+        displayName.setText(nameDisplay);
+
+        currentUserId = FirebaseAuth.getInstance().getUid();
+        btnSend = findViewById(R.id.send);
 
 
+        mChatDb = FirebaseDatabase.getInstance().getReference().child("chat").child(chatId);
 
         btnBackToMainPage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -81,21 +88,12 @@ public class ChatActivity extends AppCompatActivity {
         });
 
 
-        String nameDisplay = getIntent().getStringExtra("DISPLAYNAME");
-        displayName.setText(nameDisplay);
-
-        currentUserId = FirebaseAuth.getInstance().getUid();
-
-        btnSend = findViewById(R.id.send);
-        mMessage = findViewById(R.id.messageEt);
         btnSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 sendMessage();
             }
         });
-
-        mChatDb = FirebaseDatabase.getInstance().getReference().child("chat").child(chatId);
 
         //function calls
         getChatMessages();
@@ -104,24 +102,68 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     int PICK_IMAGE_INTENT = 1;
+
+    int totalMediaUpload = 0;
     ArrayList<String> mediaUriList = new ArrayList<>();
+    ArrayList<String> mediaIdList = new ArrayList<>();
 
-    private void sendMessage() {
-        if(!mMessage.getText().toString().isEmpty()) {
-            newMessageDb = mChatDb.push();
+    private void sendMessage(){
+        mMessage = findViewById(R.id.messageEt);
 
-            Map newMessageMap = new HashMap<>();
+        String messageId = mChatDb.push().getKey();
+        newMessageDb = mChatDb.child(messageId);
+
+        final Map newMessageMap = new HashMap<>();
+
+        newMessageMap.put("creator", FirebaseAuth.getInstance().getUid());
+
+        if(!mMessage.getText().toString().isEmpty())
             newMessageMap.put("text", mMessage.getText().toString());
-            newMessageMap.put("creator", FirebaseAuth.getInstance().getUid());
-            newMessageDb.updateChildren(newMessageMap);
+
+        if(!mediaUriList.isEmpty()){
+            totalMediaUpload = 0;  // Reset totalMediaUpload
+            mediaIdList.clear();  // Clear previous mediaIdList
+
+            for (String mediaUri : mediaUriList){
+                String mediaId = newMessageDb.child("media").push().getKey();
+                mediaIdList.add(mediaId);
+                final StorageReference filePath = FirebaseStorage.getInstance().getReference().child("chat").child(chatId).child(messageId).child(mediaId);
+
+                UploadTask uploadTask = filePath.putFile(Uri.parse(mediaUri));
+
+                uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        filePath.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                            @Override
+                            public void onSuccess(Uri uri) {
+                                if (totalMediaUpload < mediaIdList.size()) {  // Check bounds
+                                    newMessageMap.put("/media/" + mediaIdList.get(totalMediaUpload) + "/", uri.toString());
+                                    totalMediaUpload++;
+                                    if (totalMediaUpload == mediaUriList.size())
+                                        updateDatabaseWithNewMessage(newMessageDb, newMessageMap);
+                                }
+                            }
+                        });
+                    }
+                });
+            }
+        }else{
+            if(!mMessage.getText().toString().isEmpty())
+                updateDatabaseWithNewMessage(newMessageDb, newMessageMap);
         }
-
-        mMessage.setText(null);
-
-
     }
 
 
+
+    private void updateDatabaseWithNewMessage(DatabaseReference newMessageDb, Map newMessageMap) {
+        newMessageDb.updateChildren(newMessageMap);
+        mMessage.setText(null);
+        mediaIdList.clear();
+        mediaUriList.clear();
+        mediaRv.setVisibility(View.GONE);
+        mediaAdapter.notifyDataSetChanged();
+    }
 
 
     private void getChatMessages() {
@@ -131,17 +173,22 @@ public class ChatActivity extends AppCompatActivity {
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
                 if(snapshot.exists()) {
                     String text = "", creatorId = "";
+                    ArrayList<String> mediaUrlList = new ArrayList<>();
 
-                    if(snapshot.child("text").getValue() != null) {
+                    if(snapshot.child("text").getValue() != null) { //text
                         text = snapshot.child("text").getValue().toString();
                     }
 
-                    if(snapshot.child("creator").getValue() != null) {
+                    if(snapshot.child("creator").getValue() != null) { //creator
                         creatorId = snapshot.child("creator").getValue().toString();
                     }
 
-                    MessageObject mMessage = new MessageObject(snapshot.getKey(), creatorId, text);
+                    if(snapshot.child("media").getChildrenCount() > 0) { //image
+                        for(DataSnapshot mediaSnapshot : snapshot.child("media").getChildren())
+                            mediaUrlList.add(mediaSnapshot.getValue().toString());
+                    }
 
+                    MessageObject mMessage = new MessageObject(snapshot.getKey(), creatorId, text, mediaUrlList);
 
                     messageListArray.add(mMessage);
                     chatLayoutManager.scrollToPosition(messageListArray.size() - 1); //scroll to the last message
@@ -194,6 +241,7 @@ public class ChatActivity extends AppCompatActivity {
 
         mediaAdapter = new MediaAdapter(getApplicationContext(), mediaUriList); // Pass current user ID
         mediaRv.setAdapter(mediaAdapter);
+        mediaRv.setVisibility(View.GONE);
     }
 
     private void openGallery() {
@@ -203,7 +251,6 @@ public class ChatActivity extends AppCompatActivity {
         intent.setAction(intent.ACTION_GET_CONTENT);
         startActivityForResult(Intent.createChooser(intent, "Select Picture(s)"), PICK_IMAGE_INTENT);
     }
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

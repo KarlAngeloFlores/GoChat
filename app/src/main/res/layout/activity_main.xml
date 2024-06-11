@@ -8,39 +8,62 @@
 
     <Button
         android:id="@+id/btnVerifyButton"
-        android:layout_width="276dp"
-        android:layout_height="52dp"
-        android:text="Send Verification Code"
+        android:layout_width="344dp"
+        android:layout_height="60dp"
+        android:background="#0C93DF"
+        android:text="Verify"
+        android:textColor="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.49"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.65999997" />
 
     <EditText
         android:id="@+id/etVerificationCode"
-        android:layout_width="276dp"
-        android:layout_height="wrap_content"
+        android:layout_width="210dp"
+        android:layout_height="60dp"
+        android:background="@drawable/background_edit_text"
         android:ems="10"
         android:hint="code"
         android:inputType="text"
+        android:padding="16dp"
         app:layout_constraintBottom_toTopOf="@+id/btnVerifyButton"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintHorizontal_bias="0.17"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.965" />
+        app:layout_constraintVertical_bias="0.945" />
 
     <EditText
         android:id="@+id/etPhoneNumber"
-        android:layout_width="276dp"
-        android:layout_height="wrap_content"
+        android:layout_width="340dp"
+        android:layout_height="60dp"
+        android:background="@drawable/background_edit_text"
         android:ems="10"
         android:hint="Number"
         android:inputType="text"
+        android:padding="16dp"
+        android:text="+63 "
         app:layout_constraintBottom_toTopOf="@+id/etVerificationCode"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintHorizontal_bias="0.49"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.968" />
+        app:layout_constraintVertical_bias="0.945" />
+
+    <Button
+        android:id="@+id/btnSendCode"
+        android:layout_width="121dp"
+        android:layout_height="60dp"
+        android:background="#0C93DF"
+        android:text="Send Code"
+        android:textColor="#FFFFFF"
+        app:layout_constraintBottom_toTopOf="@+id/btnVerifyButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.25"
+        app:layout_constraintStart_toEndOf="@+id/etVerificationCode"
+        app:layout_constraintTop_toBottomOf="@+id/etPhoneNumber"
+        app:layout_constraintVertical_bias="0.433" />
 </androidx.constraintlayout.widget.ConstraintLayout>
