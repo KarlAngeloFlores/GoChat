@@ -85,7 +85,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
             leftChatTextViewMessage = view.findViewById(R.id.left_chat_textview_message);
             //leftChatTextViewCreator = view.findViewById(R.id.left_chat_textview_creator);
             rightChatTextViewMessage = view.findViewById(R.id.right_chat_textview_message);
-            //rightChatTextViewCreator = view.findViewById(R.id.right_chat_textview_creator);
+            //rightChatTextViewCreator = view.findViewById(R.id.right_chat_textview_creator);   
             //mViewMedia = view.findViewById(R.id.viewMedia);
         }
     }
