@@ -21,6 +21,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
 
     FirebaseUser currentUser;
 
+
     public MessageAdapter(ArrayList<MessageObject> messageArray, String currentUserId) {
         this.messageListArray = messageArray;
         this.currentUserId = currentUserId;
@@ -55,15 +56,16 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
         holder.mViewMedia.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new ImageViewer.Builder(v.getContext(), messageListArray.get(holder.getAdapterPosition()).getMediaUrlList())
-                        .setStartPosition(0)
-                        .show();
+                ArrayList<String> mediaUrls = messageListArray.get(holder.getAdapterPosition()).getMediaUrlList();
+                if (mediaUrls != null && !mediaUrls.isEmpty()) {
+                    new ImageViewer.Builder(v.getContext(), mediaUrls)
+                            .setStartPosition(0)
+                            .show();
+                }
             }
         });
 
  */
-
-
     }
 
     @Override
@@ -85,8 +87,9 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
             leftChatTextViewMessage = view.findViewById(R.id.left_chat_textview_message);
             //leftChatTextViewCreator = view.findViewById(R.id.left_chat_textview_creator);
             rightChatTextViewMessage = view.findViewById(R.id.right_chat_textview_message);
-            //rightChatTextViewCreator = view.findViewById(R.id.right_chat_textview_creator);   
-            //mViewMedia = view.findViewById(R.id.viewMedia);
+            //rightChatTextViewCreator = view.findViewById(R.id.right_chat_textview_creator);
+
+
         }
     }
 }
