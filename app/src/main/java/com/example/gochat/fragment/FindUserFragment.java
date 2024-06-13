@@ -1,8 +1,11 @@
 package com.example.gochat.fragment;
 
 import android.annotation.SuppressLint;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.database.Cursor;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.telephony.TelephonyManager;
@@ -13,6 +16,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.NotificationCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -60,6 +64,7 @@ public class FindUserFragment extends Fragment {
         userListArray = new ArrayList<>(); //list contains all users on database
 
         //function calls
+        createNotificationChannel();
         initializeRecycleView(view); //called function for recycler view
         getContactList(); //called function contact list
 
@@ -97,11 +102,26 @@ public class FindUserFragment extends Fragment {
         }
 
         if(validChat) {
+
+            //function for notification
+            NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(requireContext(), "channel_id")
+                    .setSmallIcon(R.drawable.gochatfinal)
+                    .setContentTitle("Notification")
+                    .setContentText("You have created a new group chat");
+            NotificationManager notificationManager = (NotificationManager) requireContext().getSystemService(Context.NOTIFICATION_SERVICE);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                NotificationChannel channel = notificationManager.getNotificationChannel("channel_id");
+                if (channel == null) {
+                    createNotificationChannel();
+                }
+            }
+            notificationManager.notify(0, mBuilder.build());
             Toast.makeText(getContext(), "Group chat created successfully!", Toast.LENGTH_SHORT).show();
+
             chatInfoDb.updateChildren(newChatMap);
             userDb.child(FirebaseAuth.getInstance().getUid()).child("chat").child(groupKey).setValue(true);
 
-            // Uncheck all checkboxes
+            //uncheck the checkboxes the selected users
             for(UserObject mUser : userListArray) {
                 mUser.setSelected(false);
             }
@@ -110,6 +130,20 @@ public class FindUserFragment extends Fragment {
             Toast.makeText(getContext(), "Please select at least one user to create a group chat.", Toast.LENGTH_SHORT).show();
         }
     }
+
+
+    private void createNotificationChannel() {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                CharSequence name = "notification channel name";
+                String description = "channel description";
+                int importance = NotificationManager.IMPORTANCE_DEFAULT;
+                NotificationChannel channel = new NotificationChannel("channel_id", name, importance);
+                channel.setDescription(description);
+
+                NotificationManager notificationManager = requireContext().getSystemService(NotificationManager.class);
+                notificationManager.createNotificationChannel(channel);
+            }
+        }
 
 
     private void getContactList() {
