@@ -8,3 +8,4 @@ Added select image functionality - Christina Lim and Karl Angelo Flores
 Splash screen added - Christina Lim
 UI fix - Christina Lim
 Ic launcher changed
+test
