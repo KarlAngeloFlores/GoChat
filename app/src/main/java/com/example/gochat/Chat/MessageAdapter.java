@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.gochat.R;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
@@ -19,8 +20,9 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
     ArrayList<MessageObject> messageListArray;
     private String currentUserId;
 
-    FirebaseUser currentUser;
 
+    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+    String currentUser = user.getPhoneNumber();
 
     public MessageAdapter(ArrayList<MessageObject> messageArray, String currentUserId) {
         this.messageListArray = messageArray;
@@ -45,12 +47,12 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
             holder.rightChatLayout.setVisibility(View.VISIBLE);
             holder.leftChatLayout.setVisibility(View.GONE);
             holder.rightChatTextViewMessage.setText(messageObject.getMessage());
-            //holder.rightChatTextViewCreator.setText(messageObject.getSenderId());
+            holder.rightChatTextViewCreator.setText(messageObject.getSenderId());
         } else {
             holder.leftChatLayout.setVisibility(View.VISIBLE);
             holder.rightChatLayout.setVisibility(View.GONE);
             holder.leftChatTextViewMessage.setText(messageObject.getMessage());
-            //holder.leftChatTextViewCreator.setText(messageObject.getSenderId());
+            holder.leftChatTextViewCreator.setText(messageObject.getSenderId());
         }
 /*
         holder.mViewMedia.setOnClickListener(new View.OnClickListener() {
@@ -85,9 +87,9 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
             leftChatLayout = view.findViewById(R.id.left_chat_layout);
             rightChatLayout = view.findViewById(R.id.right_chat_layout);
             leftChatTextViewMessage = view.findViewById(R.id.left_chat_textview_message);
-            //leftChatTextViewCreator = view.findViewById(R.id.left_chat_textview_creator);
+            leftChatTextViewCreator = view.findViewById(R.id.left_chat_textview_creator);
             rightChatTextViewMessage = view.findViewById(R.id.right_chat_textview_message);
-            //rightChatTextViewCreator = view.findViewById(R.id.right_chat_textview_creator);
+            rightChatTextViewCreator = view.findViewById(R.id.right_chat_textview_creator);
 
 
         }

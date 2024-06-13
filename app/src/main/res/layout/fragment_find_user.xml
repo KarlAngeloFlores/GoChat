@@ -43,7 +43,9 @@
         android:text="Create group chat"
         app:layout_constraintBottom_toTopOf="@+id/rvUserList"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.491"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView" />
+        app:layout_constraintTop_toBottomOf="@+id/textView"
+        app:layout_constraintVertical_bias="0.709" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -19,6 +19,7 @@ import com.example.gochat.Chat.MessageAdapter;
 import com.example.gochat.Chat.MessageObject;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -32,7 +33,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ChatActivity extends AppCompatActivity {
-
+    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+    String currentUser = user.getPhoneNumber();
     private RecyclerView chatRv, mediaRv; //my recycle view
     private RecyclerView.Adapter chatAdapter, mediaAdapter; //adapter
     private RecyclerView.LayoutManager chatLayoutManager, mediaLayoutManager; //layout manager
@@ -188,7 +190,7 @@ public class ChatActivity extends AppCompatActivity {
                             mediaUrlList.add(mediaSnapshot.getValue().toString());
                     }
 
-                    MessageObject mMessage = new MessageObject(snapshot.getKey(), creatorId, text, mediaUrlList);
+                    MessageObject mMessage = new MessageObject(snapshot.getKey(), creatorId, text, mediaUrlList, currentUser);
 
                     messageListArray.add(mMessage);
                     chatLayoutManager.scrollToPosition(messageListArray.size() - 1); //scroll to the last message

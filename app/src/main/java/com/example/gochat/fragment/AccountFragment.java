@@ -2,15 +2,13 @@ package com.example.gochat.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import androidx.fragment.app.Fragment;
 
 import com.example.gochat.MainActivity;
 import com.example.gochat.R;
@@ -21,10 +19,11 @@ public class AccountFragment extends Fragment {
 
     Button logoutButton;
 
-    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
 
     TextView currentPhoneNumber;
 
+    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     String currentUser = user.getPhoneNumber();
 
     @Override
