@@ -19,9 +19,7 @@ import java.util.Arrays;
 
 public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserListViewHolder> {
 
-
     ArrayList<UserObject> userListArray;
-
 
     public UserListAdapter(ArrayList<UserObject> userListArray) {
         this.userListArray = userListArray;
@@ -51,14 +49,19 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserLi
             }
         });
 
+
+        holder.mAdd.setOnCheckedChangeListener(null);
+        holder.mAdd.setChecked(userListArray.get(position).getSelected());
+
         holder.mAdd.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    userListArray.get(holder.getAdapterPosition()).setSelected(isChecked);
+                userListArray.get(holder.getAdapterPosition()).setSelected(isChecked);
             }
         });
 
     }
+
 
     private void createChat(int position) {
         String currentUserUid = FirebaseAuth.getInstance().getUid();
@@ -90,8 +93,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserLi
         name = view.findViewById(R.id.name);
         phone = view.findViewById(R.id.phone);
         mLayout = view.findViewById(R.id.layout);
-        mAdd = view.findViewById(R.id.add);
-
+        mAdd = view.findViewById(R.id.addToGroup);
 
         }
     }

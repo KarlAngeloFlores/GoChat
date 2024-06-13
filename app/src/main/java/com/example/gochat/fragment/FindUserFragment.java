@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -52,8 +53,6 @@ public class FindUserFragment extends Fragment {
             public void onClick(View v) {
                 createChat();
 
-
-
             }
         });
 
@@ -77,30 +76,41 @@ public class FindUserFragment extends Fragment {
     }
 
 
-    private void createChat(){
+    private void createChat() {
         String key = FirebaseDatabase.getInstance().getReference().child("chat").push().getKey();
+        String groupKey = "Group_" + key;
 
-        DatabaseReference chatInfoDb = FirebaseDatabase.getInstance().getReference().child("chat").child(key).child("info");
+        DatabaseReference chatInfoDb = FirebaseDatabase.getInstance().getReference().child("chat").child(groupKey).child("info");
         DatabaseReference userDb = FirebaseDatabase.getInstance().getReference().child("user");
 
         HashMap newChatMap = new HashMap();
-        newChatMap.put("id", key);
+        newChatMap.put("id", groupKey); // Use groupKey instead of key
         newChatMap.put("users/" + FirebaseAuth.getInstance().getUid(), true);
 
         Boolean validChat = false;
-        for(UserObject mUser : userListArray){
-            if(mUser.getSelected()){
+        for(UserObject mUser : userListArray) {
+            if(mUser.getSelected()) {
                 validChat = true;
                 newChatMap.put("users/" + mUser.getUid(), true);
-                userDb.child(mUser.getUid()).child("chat").child(key).setValue(true);
+                userDb.child(mUser.getUid()).child("chat").child(groupKey).setValue(true);
             }
         }
 
-        if(validChat){
+        if(validChat) {
+            Toast.makeText(getContext(), "Group chat created successfully!", Toast.LENGTH_SHORT).show();
             chatInfoDb.updateChildren(newChatMap);
-            userDb.child(FirebaseAuth.getInstance().getUid()).child("chat").child(key).setValue(true);
+            userDb.child(FirebaseAuth.getInstance().getUid()).child("chat").child(groupKey).setValue(true);
+
+            // Uncheck all checkboxes
+            for(UserObject mUser : userListArray) {
+                mUser.setSelected(false);
+            }
+            userListAdapter.notifyDataSetChanged();
+        } else {
+            Toast.makeText(getContext(), "Please select at least one user to create a group chat.", Toast.LENGTH_SHORT).show();
         }
     }
+
 
     private void getContactList() {
         String ISOPrefix = getCountryISO();
