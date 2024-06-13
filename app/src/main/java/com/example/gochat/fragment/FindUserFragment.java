@@ -9,6 +9,7 @@ import android.telephony.TelephonyManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -16,9 +17,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.gochat.CountryToPhonePrefix;
+import com.example.gochat.R;
 import com.example.gochat.UserListAdapter;
 import com.example.gochat.UserObject;
-import com.example.gochat.R;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -27,11 +29,15 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class FindUserFragment extends Fragment {
 
     private RecyclerView userListRv; //my recycle view
     private RecyclerView.Adapter userListAdapter; //adapter
+
+    Button mCreate;
+
     private RecyclerView.LayoutManager userListLayoutManager; //layout manager
     ArrayList<UserObject> userListArray, contactListArray;
 
@@ -39,6 +45,15 @@ public class FindUserFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_find_user, container, false);
+
+        mCreate = view.findViewById(R.id.btnGroupChat);
+
+        mCreate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                createChat();
+            }
+        });
 
         contactListArray = new ArrayList<>(); //list contains all contacts
         userListArray = new ArrayList<>(); //list contains all users on database
@@ -57,6 +72,32 @@ public class FindUserFragment extends Fragment {
             if (!telephonyManager.getNetworkCountryIso().isEmpty())
                 iso = telephonyManager.getNetworkCountryIso();
         return CountryToPhonePrefix.getPhone(iso);
+    }
+
+
+    private void createChat(){
+        String key = FirebaseDatabase.getInstance().getReference().child("chat").push().getKey();
+
+        DatabaseReference chatInfoDb = FirebaseDatabase.getInstance().getReference().child("chat").child(key).child("info");
+        DatabaseReference userDb = FirebaseDatabase.getInstance().getReference().child("user");
+
+        HashMap newChatMap = new HashMap();
+        newChatMap.put("id", key);
+        newChatMap.put("users/" + FirebaseAuth.getInstance().getUid(), true);
+
+        Boolean validChat = false;
+        for(UserObject mUser : userListArray){
+            if(mUser.getSelected()){
+                validChat = true;
+                newChatMap.put("users/" + mUser.getUid(), true);
+                userDb.child(mUser.getUid()).child("chat").child(key).setValue(true);
+            }
+        }
+
+        if(validChat){
+            chatInfoDb.updateChildren(newChatMap);
+            userDb.child(FirebaseAuth.getInstance().getUid()).child("chat").child(key).setValue(true);
+        }
     }
 
     private void getContactList() {
