@@ -4,17 +4,18 @@ import java.util.ArrayList;
 
 public class MessageObject {
 
-    private String messageId, senderId, message, contactNo;
+    private String messageId, senderId, message, contactNo, senderNo;
 
     ArrayList<String> mediaUrlList;
 
-    public MessageObject(String messageId, String senderId, String message, ArrayList<String> mediaUrlList, String contactNo) {
+    public MessageObject(String messageId, String senderId, String message, ArrayList<String> mediaUrlList, String contactNo, String senderNo) {
 
         this.messageId = messageId;
         this.senderId = senderId;
         this.message = message;
         this.mediaUrlList = mediaUrlList;
         this.contactNo = contactNo;
+        this.senderNo = senderNo;
     }
 
 
@@ -24,6 +25,10 @@ public class MessageObject {
 
     public String getMessageId() {
         return messageId;
+    }
+
+    public String getSenderNo() {
+        return senderNo;
     }
 
     public String getSenderId() {

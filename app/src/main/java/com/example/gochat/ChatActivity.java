@@ -28,6 +28,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -55,7 +56,7 @@ public class ChatActivity extends AppCompatActivity {
 
     ImageView btnBackToMainPage;
     DatabaseReference newMessageDb;
-
+    private DatabaseReference mDatabase;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,6 +71,7 @@ public class ChatActivity extends AppCompatActivity {
         currentUserId = FirebaseAuth.getInstance().getUid();
         btnSend = findViewById(R.id.send);
 
+        mDatabase = FirebaseDatabase.getInstance().getReference();
 
         mChatDb = FirebaseDatabase.getInstance().getReference().child("chat").child(chatId);
 
@@ -174,7 +176,10 @@ public class ChatActivity extends AppCompatActivity {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
                 if(snapshot.exists()) {
-                    String text = "", creatorId = "";
+                    String text = "", creatorId = "", senderNo = "";
+
+
+
                     ArrayList<String> mediaUrlList = new ArrayList<>();
 
                     if(snapshot.child("text").getValue() != null) { //text
@@ -190,7 +195,7 @@ public class ChatActivity extends AppCompatActivity {
                             mediaUrlList.add(mediaSnapshot.getValue().toString());
                     }
 
-                    MessageObject mMessage = new MessageObject(snapshot.getKey(), creatorId, text, mediaUrlList, currentUser);
+                    MessageObject mMessage = new MessageObject(snapshot.getKey(), creatorId, text, mediaUrlList, currentUser, senderNo);
 
                     messageListArray.add(mMessage);
                     chatLayoutManager.scrollToPosition(messageListArray.size() - 1); //scroll to the last message
@@ -220,6 +225,9 @@ public class ChatActivity extends AppCompatActivity {
 
 
     }
+
+
+
 
     private void initializeMessages() {
         chatRv = findViewById(R.id.rvMessage);
@@ -272,4 +280,7 @@ public class ChatActivity extends AppCompatActivity {
         }
 
     }
+
+
+
 }
