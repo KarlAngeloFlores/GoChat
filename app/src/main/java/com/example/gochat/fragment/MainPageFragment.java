@@ -1,6 +1,5 @@
 package com.example.gochat.fragment;
 
-import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -15,8 +14,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.Manifest;
 import com.example.gochat.Chat.ChatListAdapter;
 import com.example.gochat.Chat.ChatObject;
-import com.example.gochat.FindUser;
-import com.example.gochat.MainActivity;
 
 import com.example.gochat.R;
 import com.google.firebase.auth.FirebaseAuth;

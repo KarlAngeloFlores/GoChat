@@ -19,8 +19,6 @@ public class AccountFragment extends Fragment {
 
     Button logoutButton;
 
-
-
     TextView currentPhoneNumber;
 
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();

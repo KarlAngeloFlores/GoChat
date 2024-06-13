@@ -51,6 +51,9 @@ public class FindUserFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 createChat();
+
+
+
             }
         });
 
