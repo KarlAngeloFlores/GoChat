@@ -51,6 +51,8 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
             holder.rightChatLayout.setVisibility(View.GONE);
             holder.leftChatTextViewMessage.setText(messageObject.getMessage());
             holder.leftChatTextViewCreator.setText(messageObject.getSenderId());
+
+
         }
 /*
         holder.mViewMedia.setOnClickListener(new View.OnClickListener() {
