@@ -165,7 +165,7 @@ public class ChatActivity extends AppCompatActivity {
         mMessage.setText(null);
         mediaIdList.clear();
         mediaUriList.clear();
-        mediaRv.setVisibility(View.GONE);
+
         mediaAdapter.notifyDataSetChanged();
     }
 
@@ -251,7 +251,6 @@ public class ChatActivity extends AppCompatActivity {
 
         mediaAdapter = new MediaAdapter(getApplicationContext(), mediaUriList); // Pass current user ID
         mediaRv.setAdapter(mediaAdapter);
-        mediaRv.setVisibility(View.GONE);
     }
 
     private void openGallery() {
